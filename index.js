@@ -1,14 +1,22 @@
 const express = require('express');
 const app = express();
-const cors = require('cors');
+const cors = require("cors");
 const jwt = require('jsonwebtoken');
 require('dotenv').config()
 const stripe = require('stripe')(process.env.PAYMENT_SECRET_KEY)
 const port = process.env.PORT || 5000;
 
+
 // middleware
-app.use(cors());
-app.use(express.json());
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS, PATCH, DELETE, POST, PUT');
+    res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    app.use(express.json());
+    next();
+});
+
 
 const verifyJWT = (req, res, next) => {
     const authorization = req.headers.authorization;
@@ -72,11 +80,6 @@ async function run() {
             next();
         }
 
-        // 0. do not show secure links to those who should not see the links
-        // 1. use JWT token
-        // 3. use verifyAdmin middlewear
-
-
         //users related apis
         app.get('/users', verifyJWT, verifyAdmin, async (req, res) => {
             const result = await usersCollection.find().toArray();
@@ -96,9 +99,6 @@ async function run() {
             res.send(result);
         })
 
-        //security layer: verifyJWT
-        //email same
-        //check admin
         app.get('/users/admin/:email', verifyJWT, async (req, res) => {
             const email = req.params.email;
 
@@ -279,3 +279,5 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
     console.log(`Bistro boss is sitting on port ${port}`);
 })
+
+
