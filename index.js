@@ -1,6 +1,12 @@
 const express = require('express');
 const app = express();
 const cors = require("cors");
+const corsOptions = {
+    origin: '*',
+    credentials: true,
+    optionSuccessStatus: 200,
+}
+
 const jwt = require('jsonwebtoken');
 require('dotenv').config()
 const stripe = require('stripe')(process.env.PAYMENT_SECRET_KEY)
@@ -8,12 +14,7 @@ const port = process.env.PORT || 5000;
 
 
 // middleware
-app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-});
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 
 const verifyJWT = (req, res, next) => {
