@@ -7,7 +7,9 @@ const stripe = require('stripe')(process.env.PAYMENT_SECRET_KEY)
 const port = process.env.PORT || 5000;
 
 // middleware
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:5173'
+}));
 app.use(express.json());
 
 const verifyJWT = (req, res, next) => {
