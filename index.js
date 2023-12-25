@@ -1,11 +1,6 @@
 const express = require('express');
 const app = express();
 const cors = require("cors");
-const corsOptions = {
-    origin: '*',
-    credentials: true,
-    optionSuccessStatus: 200,
-}
 
 const jwt = require('jsonwebtoken');
 require('dotenv').config()
@@ -14,7 +9,7 @@ const port = process.env.PORT || 5000;
 
 
 // middleware
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(express.json());
 
 const verifyJWT = (req, res, next) => {
